@@ -30,18 +30,17 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 
 	// grocery list
 	groceryService.groceryItems = [
-		{id: 1, completed: true, itemName: 'milk', date: '2014-10-00'},
-		{id: 2, completed: true, itemName: 'cookies', date: '2014-10-01'},
-		{id: 3, completed: true, itemName: 'ice cream', date: '2014-10-02'},
-		{id: 4, completed: true, itemName: 'potatoes', date: '2014-10-02'},
-		{id: 5, completed: true, itemName: 'cereal', date: '2014-10-03'},
-		{id: 6, completed: true, itemName: 'bread', date: '2014-10-03'},
-		{id: 7, completed: true, itemName: 'eggs', date: '2014-10-04'},
-		{id: 8, completed: true, itemName: 'tortillas', date: '2014-10-04'}
-	]
+		{id: 1, completed: true, itemName: 'milk', date: new Date("April 1, 2018 11:13:00")},
+		{id: 2, completed: true, itemName: 'cookies', date: new Date("April 1, 2018 11:13:00")},
+		{id: 3, completed: true, itemName: 'ice cream', date: new Date("April 1, 2018 11:13:00")},
+		{id: 4, completed: true, itemName: 'potatoes', date: new Date("April 2, 2018 11:13:00")},
+		{id: 5, completed: true, itemName: 'cereal', date: new Date("April 3, 2018 11:13:00")},
+		{id: 6, completed: true, itemName: 'bread', date: new Date("April 3, 2018 11:13:00")},
+		{id: 7, completed: true, itemName: 'eggs', date: new Date("April 4, 2018 11:13:00")},
+		{id: 8, completed: true, itemName: 'tortillas', date: new Date("April 5, 2018 11:13:00")}
+	];
 
-	/* Pull the information to the next page
-	 */
+	/* Pull the information to the next page */
 	groceryService.findById = function (id) {
 		for ( var item in groceryService.groceryItems ) {
 			if ( groceryService.groceryItems[item].id === id ) 
@@ -92,7 +91,17 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 			entry.id = groceryService.getNewId();
 			groceryService.groceryItems.push(entry);
 		}
+	};
 
+	/* Remove item by getting the index of the item clicked */
+	groceryService.removeItem = function(entry) {
+		var index = groceryService.groceryItems.indexOf(entry);
+
+		/* 
+		 * 1st parameter use the index to start,
+		 * 2nd parameter tells how many items do you want to delete starting from the index
+		 */
+		groceryService.groceryItems.splice(index, 1);
 	};
 
 	return groceryService;
@@ -101,8 +110,13 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 .controller('HomeController', ["$scope", 'GroceryService', function($scope, GroceryService) {
 	$scope.appTitle = 'Grocery List';
 
-	// I get the grocery items from the servicce
+	/* Get the grocery items from the servicce */
 	$scope.groceryItems = GroceryService.groceryItems;
+
+	/* Remove the item from the list using the function in the service */
+	$scope.removeItem = function (entry) {
+		GroceryService.removeItem(entry);
+	}
 }])
 
 .controller('GroceryListItemController', ["$scope", '$routeParams', '$location', 'GroceryService', function($scope, $routeParams, $location, GroceryService) {
