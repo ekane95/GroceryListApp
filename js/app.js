@@ -32,12 +32,12 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	groceryService.groceryItems = [
 		{id: 1, completed: true, itemName: 'milk', date: new Date("April 1, 2018 11:13:00")},
 		{id: 2, completed: true, itemName: 'cookies', date: new Date("April 1, 2018 11:13:00")},
-		{id: 3, completed: true, itemName: 'ice cream', date: new Date("April 1, 2018 11:13:00")},
-		{id: 4, completed: true, itemName: 'potatoes', date: new Date("April 2, 2018 11:13:00")},
-		{id: 5, completed: true, itemName: 'cereal', date: new Date("April 3, 2018 11:13:00")},
-		{id: 6, completed: true, itemName: 'bread', date: new Date("April 3, 2018 11:13:00")},
-		{id: 7, completed: true, itemName: 'eggs', date: new Date("April 4, 2018 11:13:00")},
-		{id: 8, completed: true, itemName: 'tortillas', date: new Date("April 5, 2018 11:13:00")}
+		{id: 3, completed: false, itemName: 'ice cream', date: new Date("April 1, 2018 11:13:00")},
+		{id: 4, completed: false, itemName: 'potatoes', date: new Date("April 2, 2018 11:13:00")},
+		{id: 5, completed: false, itemName: 'cereal', date: new Date("April 3, 2018 11:13:00")},
+		{id: 6, completed: false, itemName: 'bread', date: new Date("April 3, 2018 11:13:00")},
+		{id: 7, completed: false, itemName: 'eggs', date: new Date("April 4, 2018 11:13:00")},
+		{id: 8, completed: false, itemName: 'tortillas', date: new Date("April 5, 2018 11:13:00")}
 	];
 
 	/* Pull the information to the next page */
@@ -69,7 +69,6 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 			return groceryService.newId;
 		}
 	};
-
 
 	/*
 	 * this function is called every time we add a new item 
@@ -104,6 +103,10 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 		groceryService.groceryItems.splice(index, 1);
 	};
 
+	groceryService.markCompleted = function(entry) {
+		entry.completed = !entry.completed;
+	}
+
 	return groceryService;
 })
 
@@ -116,6 +119,10 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	/* Remove the item from the list using the function in the service */
 	$scope.removeItem = function (entry) {
 		GroceryService.removeItem(entry);
+	}
+
+	$scope.markCompleted = function (entry) {
+		GroceryService.markCompleted(entry);
 	}
 }])
 

@@ -1,9 +1,13 @@
-<span style="font-weight: bold">{{item.itemName | uppercase}}</span>
+<button type="button" class="btn btn-sm btn-success pull-left" title="Check '{{item.itemName}}'" ng-click="markCompleted(item)">
+	<span class="glyphicon" ng-class="item.completed ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
+</button>
 
-<button type="button" class="btn btn-sm btn-danger pull-right" ng-click="removeItem(item)" style="margin-left:.5rem;" title="Delete {{item.itemName}}">
+<span ng-class="{strike:item.completed}" style="font-weight: bold">{{item.itemName | uppercase}}</span>
+
+<button type="button" class="btn btn-sm btn-danger pull-right" ng-click="removeItem(item)" style="margin-left:.5rem;" title="Delete '{{item.itemName}}'">
 	<span class="glyphicon glyphicon-trash"></span>
 </button>
 
-<a href="#!/addItem/edit/{{item.id}}" class="btn btn-sm btn-default pull-right" title="Edit {{item.itemName}}">
+<a href="#!/addItem/edit/{{item.id}}" class="btn btn-sm btn-default pull-right" title="Edit '{{item.itemName}}'">
 	<span class="glyphicon glyphicon-pencil"></span>
 </a>
