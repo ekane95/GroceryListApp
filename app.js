@@ -134,4 +134,11 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 		$location.path("/");
 	}
 
-}]);
+}])
+
+.directive('ekGroceryItem', function() {
+	return {
+		restrict: 'E',
+		templateUrl: 'views/groceryItem.html'
+	}
+});
