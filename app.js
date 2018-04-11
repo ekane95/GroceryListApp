@@ -6,17 +6,17 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 
 	.when("/", {
 		templateUrl: "views/groceryList.html",
-		controller: "GroceryListItemsController"
+		controller: "HomeController"
 	})
 
 	.when("/addItem", {
 		templateUrl: "views/addItem.html",
-		controller: "GroceryListItemsController"
+		controller: "GroceryListItemController"
 	})
 
-	.when("/addItem/:id", {
+	.when("/addItem/edit/:id", {
 		templateUrl: "views/addItem.html",
-		controller: "GroceryListItemsController"
+		controller: "GroceryListItemController"
 	})
 
 
@@ -40,8 +40,7 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 		{id: 8, completed: true, itemName: 'tortillas', date: '2014-10-04'}
 	]
 
-	/*
-		pull the information to the next page
+	/* Pull the information to the next page
 	 */
 	groceryService.findById = function (id) {
 		for ( var item in groceryService.groceryItems ) {
@@ -72,13 +71,28 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 		}
 	};
 
-	/* this function is called every time we add a new item
-		it get the highest entry id from the getNewId function
-		and then push this new item on the grocery items list
-	*/
+
+	/*
+	 * this function is called every time we add a new item 
+	 * it get the highest entry id from the getNewId function
+	 * and then push this new item on the grocery items list
+	.*
+	 * look for the item on the list
+	 * if I find it, that means I am editing an entry 
+	 * and I need to update it attributes 
+	 * otherwise I don't find a new entry so I create a new one
+	 */
 	groceryService.save = function(entry) {
-		entry.id = groceryService.getNewId();
-		groceryService.groceryItems.push(entry);
+		var updatedItem = groceryService.findById(entry.id);
+		if ( updatedItem ) {
+			updatedItem.completed = entry.completed;
+			updatedItem.itemName = entry.itemName;
+			updatedItem.date = entry.date;
+		} else {
+			entry.id = groceryService.getNewId();
+			groceryService.groceryItems.push(entry);
+		}
+
 	};
 
 	return groceryService;
@@ -86,14 +100,18 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 
 .controller('HomeController', ["$scope", 'GroceryService', function($scope, GroceryService) {
 	$scope.appTitle = 'Grocery List';
+
+	// I get the grocery items from the servicce
+	$scope.groceryItems = GroceryService.groceryItems;
 }])
 
-.controller('GroceryListItemsController', ["$scope", '$routeParams', '$location', 'GroceryService', function($scope, $routeParams, $location, GroceryService) {
+.controller('GroceryListItemController', ["$scope", '$routeParams', '$location', 'GroceryService', function($scope, $routeParams, $location, GroceryService) {
 
-	// we get the grocery items from the servicce
-	$scope.groceryItems = GroceryService.groceryItems;
-
-	$scope.groceryItem = { id:0, completed:true, itemName: "", date: new Date() }
+	if ( !$routeParams.id ) {
+		$scope.groceryItem = { id:0, completed:false, itemName: "", date: new Date() }
+	} else {
+		$scope.groceryItem = _.clone(GroceryService.findById( parseInt( $routeParams.id ) ) );
+	}
 
 	// on save I call the GroceryService.save function
 	// then we go to the main page
