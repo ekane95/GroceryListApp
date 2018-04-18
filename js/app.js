@@ -86,17 +86,21 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	groceryService.save = function(entry) {
 		var updatedItem = groceryService.findById(entry.id);
 		if ( updatedItem ) {
-			updatedItem.completed = entry.completed;
-			updatedItem.itemName = entry.itemName;
-			updatedItem.date = entry.date;
+			$http.post('data/updated_item.json')
+			.success(function(data) {
+				if (data.status == 1) {
+					updatedItem.completed = entry.completed;
+					updatedItem.itemName = entry.itemName;
+					updatedItem.date = entry.date;
+				}
+			})
+			.error(function(data, status) {});
 		} else {
 			$http.post('data/added_item.json', entry)
 			.success(function(data){
 				entry.id = data.newId;
 			})
-			.error(function(data,status) {
-				
-			});
+			.error(function(data,status) {});
 
 			// entry.id = groceryService.getNewId();
 			groceryService.groceryItems.push(entry);
