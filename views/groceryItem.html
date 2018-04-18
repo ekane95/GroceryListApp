@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-sm btn-success pull-left" title="Check '{{item.itemName}}'" ng-click="markCompleted(item)">
+<button type="button" class="btn btn-sm btn-success pull-left" title="{{itemStatus}} '{{item.itemName}}'" ng-click="markCompleted(item)">
 	<span class="glyphicon" ng-class="item.completed ? 'glyphicon-check' : 'glyphicon-unchecked'"></span>
 </button>
 

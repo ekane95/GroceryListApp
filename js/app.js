@@ -25,20 +25,23 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	});
 })
 
-.service('GroceryService', function(){
+.service('GroceryService', function($http){
 	var groceryService = {};
 
 	// grocery list
-	groceryService.groceryItems = [
-		{id: 1, completed: true, itemName: 'milk', date: new Date("April 1, 2018 11:13:00")},
-		{id: 2, completed: true, itemName: 'cookies', date: new Date("April 1, 2018 11:13:00")},
-		{id: 3, completed: false, itemName: 'ice cream', date: new Date("April 1, 2018 11:13:00")},
-		{id: 4, completed: false, itemName: 'potatoes', date: new Date("April 2, 2018 11:13:00")},
-		{id: 5, completed: false, itemName: 'cereal', date: new Date("April 3, 2018 11:13:00")},
-		{id: 6, completed: false, itemName: 'bread', date: new Date("April 3, 2018 11:13:00")},
-		{id: 7, completed: false, itemName: 'eggs', date: new Date("April 4, 2018 11:13:00")},
-		{id: 8, completed: false, itemName: 'tortillas', date: new Date("April 5, 2018 11:13:00")}
-	];
+	groceryService.groceryItems = [];
+
+	$http.get("data/server_data.json")
+		.success(function(data){
+			groceryService.groceryItems = data;
+
+			for(var item in groceryService.groceryItems){
+				groceryService.groceryItems[item].date = new Date(groceryService.groceryItems[item].date);
+			}
+		})
+		.error(function(data,status){
+			alert("Things went wrong!");
+		});
 
 	/* Pull the information to the next page */
 	groceryService.findById = function (id) {
@@ -74,7 +77,7 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	 * this function is called every time we add a new item 
 	 * it get the highest entry id from the getNewId function
 	 * and then push this new item on the grocery items list
-	.*
+
 	 * look for the item on the list
 	 * if I find it, that means I am editing an entry 
 	 * and I need to update it attributes 
@@ -124,6 +127,15 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	$scope.markCompleted = function (entry) {
 		GroceryService.markCompleted(entry);
 	}
+
+	$scope.markCompleted = function (entry) {
+		GroceryService.markCompleted(entry);
+	}
+
+	$scope.$watch( function () { return GroceryService.groceryItems; }, function (groceryItems) {
+		$scope.groceryItems = groceryItems;
+	});
+
 }])
 
 .controller('GroceryListItemController', ["$scope", '$routeParams', '$location', 'GroceryService', function($scope, $routeParams, $location, GroceryService) {
