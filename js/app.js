@@ -86,7 +86,7 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 	groceryService.save = function(entry) {
 		var updatedItem = groceryService.findById(entry.id);
 		if ( updatedItem ) {
-			$http.post('data/updated_item.json')
+			$http.post('data/updated_item.json', entry)
 			.success(function(data) {
 				if (data.status == 1) {
 					updatedItem.completed = entry.completed;
@@ -109,13 +109,22 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 
 	/* Remove item by getting the index of the item clicked */
 	groceryService.removeItem = function(entry) {
-		var index = groceryService.groceryItems.indexOf(entry);
+		$http.post('data/delete_item.json', {id: entry.id})
+		.success(function(data) {
+			if (data.status) {
+				var index = groceryService.groceryItems.indexOf(entry);
+				/* 
+				 * 1st parameter use the index to start,
+				 * 2nd parameter tells how many items do you want to delete starting from the index
+				 */
+				groceryService.groceryItems.splice(index, 1);
+			}
+		})
+		.error(function(data, status) {
+			/* Act on the event */
+		});
 
-		/* 
-		 * 1st parameter use the index to start,
-		 * 2nd parameter tells how many items do you want to delete starting from the index
-		 */
-		groceryService.groceryItems.splice(index, 1);
+
 	};
 
 	groceryService.markCompleted = function(entry) {
