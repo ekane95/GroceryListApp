@@ -90,7 +90,15 @@ var app = angular.module('groceryListApp', ["ngRoute"])
 			updatedItem.itemName = entry.itemName;
 			updatedItem.date = entry.date;
 		} else {
-			entry.id = groceryService.getNewId();
+			$http.post('data/added_item.json', entry)
+			.success(function(data){
+				entry.id = data.newId;
+			})
+			.error(function(data,status) {
+				
+			});
+
+			// entry.id = groceryService.getNewId();
 			groceryService.groceryItems.push(entry);
 		}
 	};
